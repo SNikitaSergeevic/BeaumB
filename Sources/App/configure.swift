@@ -18,6 +18,8 @@ public func configure(_ app: Application) throws {
 
     app.migrations.add(CreateUser())
     app.migrations.add(CreateAd())
+    app.migrations.add(CreateRecord())
+    app.migrations.add(CreateLike())
 
 //    app.views.use(.leaf)
 

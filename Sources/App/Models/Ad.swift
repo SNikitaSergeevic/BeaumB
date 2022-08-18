@@ -25,6 +25,12 @@ final class Ad: Model, Content {
     @Parent(key: "userID")
     var user: User
     
+    @Children(for: \.$ad) // records on current ad
+    var records: [Record]
+    
+    @Children(for: \.$ad) // likes on ads
+    var likes: [Like]
+    
     @Field(key: "title")
     var title: String
     
@@ -59,6 +65,8 @@ final class Ad: Model, Content {
           createdAt: Date? = nil,
           updatedAt: Date? = nil,
           userID: User.IDValue,
+          records: [Record],
+          likes: [Like],
           title: String,
           description: String,
           address: String,
@@ -69,6 +77,8 @@ final class Ad: Model, Content {
         self.createdAt = createdAt
         self.updateAt = updatedAt
         self.$user.id = userID
+        self.records = records
+        self.likes = likes
         self.title = title
         self.description = description
         self.address = address

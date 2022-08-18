@@ -12,4 +12,6 @@ func routes(_ app: Application) throws {
 
     try app.register(collection: UserController())
     try app.register(collection: AdController())
+    try app.register(collection: RecordController())
+    try app.register(collection: LikeController())
 }

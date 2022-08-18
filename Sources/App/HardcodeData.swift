@@ -28,6 +28,21 @@ import Foundation
   "whoClient": "famale",
   "price": "1000000"
  }
+ 
+ record
+ 
+ {
+     "ad": {
+         "id": "A55F1F2B-2094-41FF-BBFE-A2A993BF696C"
+     },
+     "staf": {
+         "id": "21AD4F0C-7B5F-4A77-AE45-3B9F59901683"
+     },
+     "client": {
+         "id": "971FB78E-18E8-4183-BECE-70F52F6302E4"
+     },
+     "meetAdress": "Lenina 162"
+ }
 
  id: UUID? = nil,
        createdAt: Date? = nil,

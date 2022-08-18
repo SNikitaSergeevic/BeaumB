@@ -14,7 +14,7 @@ struct CreateAd: Migration {
             .id()
             .field("createdAt", .date, .required)
             .field("updatedAt", .date, .required)
-            .field("userID", .uuid, .required)
+            .field("userID", .uuid, .references("users", "id"))
             .field("title", .string, .required)
             .field("description", .string, .required)
             .field("address", .string, .required)
@@ -25,6 +25,6 @@ struct CreateAd: Migration {
     }
     
     func revert(on database: Database) -> EventLoopFuture<Void> {
-       database.schema("user").delete()
+       database.schema("ads").delete()
     }
 }
