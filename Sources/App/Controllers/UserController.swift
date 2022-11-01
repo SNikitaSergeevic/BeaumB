@@ -19,7 +19,7 @@ struct UserController: RouteCollection {
         usersRoute.get(use: requestAllHandler)
         usersRoute.post(use: createHandler)
         usersRoute.delete(":userID", use: delete)
-        usersRoute.on(.POST, "users", ":userID", "addProfilePicture", body: .collect(maxSize: "10mb") ,use: addProfilePicturePostHandler)
+        usersRoute.on(.POST, ":userID", "addProfilePicture", body: .collect(maxSize: "10mb") ,use: addProfilePicturePostHandler)
         
         let basicAuthMiddleware = User.authenticator()
         let basicAuthGroup = usersRoute.grouped(basicAuthMiddleware)
@@ -59,10 +59,13 @@ struct UserController: RouteCollection {
                 }
                 let name = "\(userID)-\(UUID()).jpg"
                 
-                //                let path = req.application.directory.workingDirectory + imageFolder + name
-                let path = "/Users/nikitasergeevich/WorkProject/BM/BeaumB/" + imageFolder + name
+                                let path = req.application.directory.workingDirectory + imageFolder + name
+//                imageFolder
+//                req.application.directory.workingDirectory +
+//                let path = "~/Users/nikitasergeevich/WorkProject/BM/BeaumB/" + imageFolder + name
                 print("3")
                 //                print("Dir: ", req.application.directory.workingDirectory, "Dir2: ", path)
+                print("path", path)
                 return req.fileio
                     .writeFile(.init(data: data.picture), at: path)
                     .flatMap {
