@@ -20,6 +20,7 @@ public func configure(_ app: Application) throws {
     app.migrations.add(CreateAd())
     app.migrations.add(CreateRecord())
     app.migrations.add(CreateLike())
+    app.migrations.add(CreateToken())
 
 //    app.views.use(.leaf)
 

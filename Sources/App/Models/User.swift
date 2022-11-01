@@ -28,6 +28,9 @@ final class User: Model, Content {
     @Field(key: "email")
     var email: String
     
+    @OptionalField(key: "profilePicture")
+    var profilePicture: String?
+    
     @Field(key: "phoneNumber")
     var phoneNumber: String
     
@@ -66,6 +69,7 @@ final class User: Model, Content {
          updatedAt: Date? = nil,
          name: String,
          email: String,
+         profilePicture: String? = nil,
          phoneNumber: String,
          password: String,
          grade: Double = 0.0,
@@ -96,4 +100,66 @@ final class User: Model, Content {
         
     }
     
+    final class Public: Content {
+        var id: UUID?
+        var name: String
+        var profilePicture: String?
+        var createdAt: Date?
+        var grade: Double
+        var sex: String
+    //    var ads: [Ad]
+    //    var records: [Record]
+        
+        
+        init(id: UUID?, name: String, profilePicture: String?, createdAt: Date?, grade: Double, sex: String) {
+            self.id = id
+            self.name = name
+            self.profilePicture = profilePicture
+            self.createdAt = createdAt
+            self.grade = grade
+            self.sex = sex
+        }
+        
+        
+    }
+    
 }
+
+extension User {
+    func convertToPublic() -> User.Public {
+        return User.Public(id: id, name: name, profilePicture: profilePicture, createdAt: createdAt, grade: grade, sex: sex)
+    }
+}
+
+extension User: ModelAuthenticatable {
+    
+    static let usernameKey = \User.$email
+    static let passwordHashKey = \User.$password
+    
+    func verify(password: String) throws -> Bool {
+        try Bcrypt.verify(password, created: self.password)
+    }
+    
+}
+
+extension EventLoopFuture where Value: User {
+    func convertToPublic() -> EventLoopFuture<User.Public> {
+        return self.map { user in
+            return user.convertToPublic()
+        }
+    }
+}
+
+extension Collection where Element: User {
+    func convertToPublic() -> [User.Public] {
+        return self.map{$0.convertToPublic()}
+    }
+}
+
+extension EventLoopFuture where Value == Array<User> {
+    func convertToPublic() -> EventLoopFuture<[User.Public]> {
+        return self.map{$0.convertToPublic()}
+    }
+}
+
+

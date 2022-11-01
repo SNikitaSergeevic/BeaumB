@@ -14,7 +14,15 @@ struct AdController: RouteCollection {
         let ads = routes.grouped("api", "ads")
         
         ads.get(use: requestAllAds)
-        ads.post(use: createHandler)
+//        ads.post(use: createHandler)
+        
+        let basicAuthMiddleware = Token.authenticator()
+        
+        let guardAuthMiddleware = User.guardMiddleware()
+        
+        let tokenAuthGroup = ads.grouped(basicAuthMiddleware, guardAuthMiddleware)
+        
+        tokenAuthGroup.post(use: createHandler)
         
     }
     
@@ -24,9 +32,15 @@ struct AdController: RouteCollection {
     
     func createHandler(_ req: Request) throws -> EventLoopFuture<Ad> {
         let ad = try req.content.decode(Ad.self)
+        let user = try req.auth.require(User.self)
+        ad.$user.id = try user.requireID()
         return ad.save(on: req.db).map{ad}
         
     }
+    
+//    func updateHandler(_ req: Request) throws -> EventLoopFuture<Ad> {
+////        let updateDate = req.content.decode() // need CreateAdData
+//    }
     
 }
 

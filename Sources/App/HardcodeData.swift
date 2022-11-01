@@ -29,6 +29,16 @@ import Foundation
   "price": "1000000"
  }
  
+ Tokens
+ 
+ {
+     "value": "CYRyJ9bn06olJAUFSMWfdw==",
+     "user": {
+         "id": "F30CB5BB-FC82-424F-8896-EF22A2C5552B"
+     },
+     "id": "46193500-CE4B-442D-AD36-64A83B9748EC"
+ }
+ 
  record
  
  {
