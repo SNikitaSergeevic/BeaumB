@@ -6,9 +6,7 @@ func routes(_ app: Application) throws {
         try await req.view.render("index", ["title": "Hello Vapor!"])
     }
 
-    app.get("hello") { req async -> String in
-        "Hello, world!"
-    }
+    app.get("hello") { req async -> String in "http://127.0.0.1:8080/"}
 
     try app.register(collection: UserController())
     try app.register(collection: AdController())

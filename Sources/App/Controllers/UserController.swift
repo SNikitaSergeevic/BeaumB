@@ -22,17 +22,29 @@ struct UserController: RouteCollection {
         usersRoute.on(.POST, ":userID", "addProfilePicture", body: .collect(maxSize: "10mb") ,use: addProfilePicturePostHandler)
         
         let basicAuthMiddleware = User.authenticator()
-        let basicAuthGroup = usersRoute.grouped(basicAuthMiddleware)
+        let guardAuthMiddleware = User.guardMiddleware()
         
-        basicAuthGroup.post("login", use: loginHandler)
+        let basAuthMiddleware = Token.authenticator()
+        
+        let protectedLogin = usersRoute.grouped(basicAuthMiddleware, guardAuthMiddleware)
+        let protectedToken = usersRoute.grouped(basAuthMiddleware)
+        
+//        "id": "57FEDB98-AEFA-4071-99E2-4C5141AD55A1",
+//            "user": {
+//                "id": "F30CB5BB-FC82-424F-8896-EF22A2C5552B"
+//            },
+//            "value": "zNkpP0jXnlZZPbb/T0es4A=="
+        
+        protectedLogin.post("login", use: loginHandlerGetToken) // get firstly token, and get self user data
+        protectedToken.get(":userID", "selfUserData", use: getSelfUserData) // get self user data
         
     }
     
     
-    func createHandler(_ req: Request) throws -> EventLoopFuture<User.Public> {
+    func createHandler(_ req: Request) throws -> EventLoopFuture<User> {
         let user = try req.content.decode(User.self)
         user.password = try Bcrypt.hash(user.password)
-        return user.save(on: req.db).map{user.convertToPublic()}
+        return user.save(on: req.db).map{user}
     }
     
     func requestAllHandler(_ req: Request) -> EventLoopFuture<[User.Public]> {
@@ -78,11 +90,15 @@ struct UserController: RouteCollection {
         
     }
     
-    func loginHandler(_ req: Request)  throws -> EventLoopFuture<Token> {
+    func loginHandlerGetToken(_ req: Request)  throws -> EventLoopFuture<Token> {
         let user = try req.auth.require(User.self)
         let token = try Token.generate(for: user)
         
         return token.save(on: req.db).map{ token }
+    }
+    
+    func getSelfUserData(_ req: Request) throws -> EventLoopFuture<User> {
+        User.find(req.parameters.get("userID"), on: req.db).unwrap(or: Abort(.notFound))
     }
     
     

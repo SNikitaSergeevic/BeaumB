@@ -32,11 +32,11 @@ import Foundation
  Tokens
  
  {
-     "value": "CYRyJ9bn06olJAUFSMWfdw==",
+     "value": "32rpmUYsLdJaKKAD6MiAoA==",
+     "id": "5DBCF90E-0B60-4382-A8E4-803760CFC867",
      "user": {
          "id": "F30CB5BB-FC82-424F-8896-EF22A2C5552B"
-     },
-     "id": "46193500-CE4B-442D-AD36-64A83B9748EC"
+     }
  }
  
  record
