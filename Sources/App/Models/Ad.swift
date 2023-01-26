@@ -40,8 +40,6 @@ final class Ad: Model, Content {
     @Field(key: "address")
     var address: String
     
-    //main picture File?
-    
     //other picture File?
     
     //category many-to-many
@@ -56,6 +54,8 @@ final class Ad: Model, Content {
     @Field(key: "price")
     var price: String
     
+    @OptionalField(key: "pictureMain")
+    var pictureMain: String?
     
     
     
@@ -63,7 +63,7 @@ final class Ad: Model, Content {
     
     init( id: UUID? = nil,
           createdAt: Date? = nil,
-          updatedAt: Date? = nil,
+          updateAt: Date? = nil,
           userID: User.IDValue,
           records: [Record],
           likes: [Like],
@@ -71,11 +71,12 @@ final class Ad: Model, Content {
           description: String,
           address: String,
           whoClient: String,
-          price: String
+          price: String,
+          pictureMain: String? = nil
     ){
         self.id = id
         self.createdAt = createdAt
-        self.updateAt = updatedAt
+        self.updateAt = updateAt
         self.$user.id = userID
         self.records = records
         self.likes = likes
@@ -84,8 +85,66 @@ final class Ad: Model, Content {
         self.address = address
         self.whoClient = whoClient
         self.price = price
+        self.pictureMain = pictureMain
+    }
+
+    final class Short: Content {
+        var id: UUID?
+        var createdAt: Date? = nil
+        var userID: User.IDValue
+        var title: String
+        var address: String
+        var price: String
+        var pictureMain: String?
+        init(id: UUID?,
+            createdAt: Date?, 
+            userID: User.IDValue, 
+            title: String, 
+            address: String, 
+            price: String, 
+            pictureMain: String?) {
+            self.id = id
+            self.createdAt = createdAt
+            self.userID = userID
+            self.title = title
+            self.address = address
+            self.price = price
+            self.pictureMain = pictureMain
+        }
     }
     
+}
+
+extension Ad {
+    func convertAdToShort() -> Ad.Short {
+        return Ad.Short(id: id, 
+                        createdAt: createdAt, 
+                        userID: $user.id, 
+                        title: title, 
+                        address: address, 
+                        price: price, 
+                        pictureMain: pictureMain)
+    }
+}
+
+extension EventLoopFuture where Value: Ad {
+    func convertAdToShort() -> EventLoopFuture<Ad.Short> {
+        return self.map{ ad in
+            return ad.convertAdToShort()
+        }
+    }
+}
+
+extension Collection where Element: Ad {
+    func convertAdToShort() -> [Ad.Short] {
+        return self.map{$0.convertAdToShort()}
+    }
+}
+
+extension EventLoopFuture where Value == Array<Ad> {
+    func convertAdToShort() -> EventLoopFuture<[Ad.Short]> {
+        return self.map{$0.convertAdToShort()}
+    }
 }
 
 

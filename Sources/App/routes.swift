@@ -13,3 +13,12 @@ func routes(_ app: Application) throws {
     try app.register(collection: RecordController())
     try app.register(collection: LikeController())
 }
+
+/* needed routes
+- change user
+
+
+
+
+
+*/

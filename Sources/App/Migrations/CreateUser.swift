@@ -9,14 +9,14 @@ struct CreateUser: Migration {
             .field("createdAt", .date, .required)
             .field("updatedAt", .date, .required)
             .field("name", .string, .required)
-            .field("email", .string, .required)
+            .field("email", .string, .required) // unique
             .field("profilePicture", .string)
             .field("phoneNumber", .string, .required)
             .field("password", .string, .required)
             .unique(on: "email")
             .field("grade", .double, .required)
             .field("sex", .string, .required)
-//            .field("avatar", .data, .required)
+            .field("description", .string)
             .create()
     }
     

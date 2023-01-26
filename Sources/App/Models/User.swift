@@ -24,15 +24,18 @@ final class User: Model, Content {
     
     @Field(key: "name")
     var name: String
-    
+
+    // @Field(key: "description")
+    // var description: String?
+
     @Field(key: "email")
     var email: String
     
     @OptionalField(key: "profilePicture")
     var profilePicture: String?
     
-    @Field(key: "phoneNumber")
-    var phoneNumber: String
+    @OptionalField(key: "phoneNumber")
+    var phoneNumber: String?
     
     @Field(key: "password")
     var password: String
@@ -42,6 +45,9 @@ final class User: Model, Content {
     
     @Field(key: "sex")
     var sex: String
+
+    @OptionalField(key: "description")
+    var description: String?
     
     @Children(for: \.$staf) // records on service to me
     var records: [Record]
@@ -70,15 +76,15 @@ final class User: Model, Content {
          name: String,
          email: String,
          profilePicture: String? = nil,
-         phoneNumber: String,
+         phoneNumber: String? = nil,
          password: String,
          grade: Double = 0.0,
          sex: String,
+         description: String? = "",
          records: [Record],
          iAmRecords: [Record],
-         ads: [Ad],
+         ads: [Ad] = [],
          likes: [Like]
-//         avatar: File? = nil
     ){
         
         self.id = id
@@ -90,14 +96,11 @@ final class User: Model, Content {
         self.password = password
         self.grade = grade
         self.sex = sex
+        self.description = description
         self.records = records
         self.iAmRecords = iAmRecords
         self.ads = ads
         self.likes = likes
-        
-//        self.avatar = avatar
-        
-        
     }
     
     final class Public: Content {
@@ -107,27 +110,24 @@ final class User: Model, Content {
         var createdAt: Date?
         var grade: Double
         var sex: String
-    //    var ads: [Ad]
-    //    var records: [Record]
+        var description: String?
         
-        
-        init(id: UUID?, name: String, profilePicture: String?, createdAt: Date?, grade: Double, sex: String) {
+        init(id: UUID?, name: String, profilePicture: String?, createdAt: Date?, grade: Double, sex: String, description: String? = nil) {
             self.id = id
             self.name = name
             self.profilePicture = profilePicture
             self.createdAt = createdAt
             self.grade = grade
             self.sex = sex
+            self.description = description
         }
-        
-        
     }
     
 }
 
 extension User {
     func convertToPublic() -> User.Public {
-        return User.Public(id: id, name: name, profilePicture: profilePicture, createdAt: createdAt, grade: grade, sex: sex)
+        return User.Public(id: id, name: name, profilePicture: profilePicture, createdAt: createdAt, grade: grade, sex: sex, description: description)
     }
 }
 

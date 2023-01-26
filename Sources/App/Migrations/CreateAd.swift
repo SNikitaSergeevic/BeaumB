@@ -20,6 +20,7 @@ struct CreateAd: Migration {
             .field("address", .string, .required)
             .field("whoClient", .string, .required)
             .field("price", .string, .required)
+            .field("pictureMain", .string)
             .create()
         
     }
